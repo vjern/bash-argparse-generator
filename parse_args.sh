@@ -19,7 +19,7 @@ decho() {
     done
     if [[ -z "$mini" ]]; then
         echo "$@" 
-    elif [ "$@" ]; then
+    elif [[ "$@" ]]; then
         echo -n "$@ "
     fi
 }
@@ -62,7 +62,7 @@ parse() {
                     tar='"$2"; shift'
                 fi
                 decho 3 "$name="$tar';'
-                [[ -z "$mini" ]] && decho 3 "echo KW.ARG: $name = "'$'"$name"';'
+                [[ -z "$mini" ]] || [[ -n "$verbose" ]] && decho 3 "echo KW.ARG: $name = "'$'"$name"';'
                 decho 3 ';;'
                 ;;
             \"*):
@@ -104,19 +104,51 @@ parse() {
     if [ -n "$posparams" ]; then
         it=2
         [[ -z "$mini" ]] && decho 0 '# Parse positional arguments'
-        [[ -z "$mini" ]] && decho 0 "echo posargs="'$posargs'
+        [[ -z "$mini" ]] || [[ -n "$verbose" ]] && decho 0 "echo posargs="'$posargs;'
         decho 0 'if [[ -n "$posargs" ]]; then'
         for param in $(echo $posparams | tr ':' '\n'); do
             decho 1 "$param="'$(echo "$posargs" | cut -d: -f'"$it"');'
-            [[ -z "$mini" ]] && decho 1 "echo POS.ARG: $param = "'$'"$param"';'
+            [[ -z "$mini" ]] || [[ -n "$verbose" ]] && decho 1 "echo POS.ARG: $param = "'$'"$param"';'
             it=$((it + 1))
         done
         decho 0 'fi'
     fi
 }
 
+wrap() {
+    width="$1"
+        # text="$@"
+    # result=""
+    # text=$(echo "$text" | tr '\n' ' ' | tr '\t' ' ')
+    # while [ "$text" ]; do
+    #     chunk="$(echo $text | head -c $width)"
+    #     text="$(echo $text | tail -c +$width)"
+    #     result="$result\n$chunk"
+    #     info $chunk
+    # done
+    cat <&0 | fold -w $width | sed -e 's/\( \?\)$/\1\\/g'
+}
+
 arg-make() {
-    parse "$@"
+
+    for i in $@; do
+        case "$i" in
+            +*)
+                name=$(echo $i | tr -d '+')
+                eval "$name=true"
+        esac
+    done
+
+    e=$(parse "$@")
+    if [[ -n "$mini" ]]; then
+        e=`echo $e | sed -e 's/ \?\([;|=]\) \?/\1/g'`
+        # e="`echo $e | sed -e 's/ \?\([\[\(]\)/\1/g'`"
+        e="`echo $e | sed -e 's/\([)]\) \?/\1/g'`"
+        e="`echo $e | sed -e 's/;;;/;;/g'`"
+    fi
+    e=`echo "$e" | wrap 30`
+    echo "$e"
+    echo
 }
 
 revargs() {
