@@ -183,7 +183,7 @@ upload() {
 
 download() {
     source <(
-        argmake \
+        arg make \
           url \
           file \
           -u,--url {} \
