@@ -68,11 +68,12 @@ done
 # Parse positional arguments
 echo posargs=$posargs
 if [[ -n "$posargs" ]]; then
-    file,=$(echo "$posargs" | cut -d: -f2)
-    echo POS.ARG: file, = $file,
-    url,=$(echo "$posargs" | cut -d: -f2)
-    echo POS.ARG: url, = $url,
+    file=$(echo "$posargs" | cut -d: -f2)
+    echo POS.ARG: file = $file
+    url=$(echo "$posargs" | cut -d: -f3)
+    echo POS.ARG: url = $url
 fi
+
 ```
 
 Let's say we place this code in a file called `parser.sh`, and we try running it with various arguments:
