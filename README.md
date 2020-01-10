@@ -33,7 +33,7 @@ Let's say we want to write a parser that allows the user to both pass `file` and
 This is how you would do it with this tool in its current version:
 
 ```bash
- ./parse_args.sh argmake \
+ ./parse_args.sh arg make \
     file \ # A positional argument
     url \ # A positional argument
     -f,--file {} \ # A keyword argument, here to allow both forms of providing the 'file' argument
@@ -155,7 +155,7 @@ source ${__FOLDER__}parse_args.sh # Source==import from the folder path
 Then, to parse arguments at the top-level or in a function, source the code execution:
 ```sh
 source <(
-    argmake \
+    arg make \
       file \
       url \
       -f,--file {} \
@@ -171,7 +171,7 @@ It's especially useful when you have several subcommands:
 ```bash
 upload() {
     source <(
-        argmake \
+        arg make \
           file \
           ip \
           -f,--file {} \
