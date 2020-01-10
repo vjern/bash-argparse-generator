@@ -97,11 +97,7 @@ parse() {
     fi
 }
 
-make() {
-    parse "$@"
-}
-
-argmake() {
+arg-make() {
     parse "$@"
 }
 
@@ -168,7 +164,7 @@ prefix() {
         result=`prefix $cmd $@`
     fi
 
-    [ -n "$result" ] && echo $result
+    [ -n "$result" ] && echo "$result"
 
 }
 
