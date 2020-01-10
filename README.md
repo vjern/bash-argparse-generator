@@ -186,7 +186,7 @@ download() {
         arg make \
           url \
           file \
-          -u,--url {} \
+          -i,--ip {} \
           -f,--file {} \
           -t,--to {}
     )
