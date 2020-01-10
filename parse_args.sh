@@ -14,10 +14,14 @@ info() {
 decho() {
     depth="$1"
     shift
-    for i in $(seq $depth); do
+    [[ -z "$mini" ]] && for i in $(seq $depth); do
         echo -n '    '
     done
-    echo "$@" 
+    if [[ -z "$mini" ]]; then
+        echo "$@" 
+    elif [[ "$@" ]]; then
+        echo -n "$@ "
+    fi
 }
 
 sc() {
@@ -26,13 +30,25 @@ sc() {
 
 parse() {
     info args="'$@'"
-    decho 0 'posargs=""'
+
+    posparams=""
+
+    # Parse for actual arguments
+
+    for i in $@; do
+        case "$i" in
+            +*)
+                name=$(echo $i | tr -d '+')
+                eval "$name=true"
+        esac
+    done
+
+    # 
+
+    decho 0 'posargs="";'
     decho 0
     decho 0 'while [[ $# -gt 0 ]]; do'
     decho 1 'case "$1" in'
-
-    expandarg=""
-    posparams=""
 
     while [ $# -gt 0 ]; do
         case "$1" in
@@ -46,7 +62,7 @@ parse() {
                     tar='"$2"; shift'
                 fi
                 decho 3 "$name="$tar';'
-                decho 3 "echo KW.ARG: $name = "'$'"$name"';'
+                [[ -z "$mini" ]] || [[ -n "$verbose" ]] && decho 3 "echo KW.ARG: $name = "'$'"$name"';'
                 decho 3 ';;'
                 ;;
             \"*):
@@ -56,6 +72,8 @@ parse() {
                 # Check if flag name exists;
                 # If it doesn't, raise an error;
                 # If it does make it a storage flag;
+                ;;
+            +*)
                 ;;
             *)
                 info "pos? $1"
@@ -72,7 +90,7 @@ parse() {
     if [ -n "$posparams" ]; then
         # Add *) case
         # decho 2 '*)'
-        decho 3 'posargs="$posargs:$1"'
+        decho 3 'posargs="$posargs:$1";'
     else
         decho 3 'echo 2>&1 "Unexpected positional argument";'
         decho 3 'exit 1;'
@@ -81,24 +99,56 @@ parse() {
 
     decho 1 'esac;'
     decho 1 'shift;'
-    decho 0 'done'
+    decho 0 'done;'
     decho 0
     if [ -n "$posparams" ]; then
         it=2
-        decho 0 '# Parse positional arguments'
-        decho 0 "echo posargs="'$posargs'
+        [[ -z "$mini" ]] && decho 0 '# Parse positional arguments'
+        [[ -z "$mini" ]] || [[ -n "$verbose" ]] && decho 0 "echo posargs="'$posargs;'
         decho 0 'if [[ -n "$posargs" ]]; then'
         for param in $(echo $posparams | tr ':' '\n'); do
-            decho 1 "$param="'$(echo "$posargs" | cut -d: -f'"$it"')'
-            decho 1 "echo POS.ARG: $param = "'$'"$param"
+            decho 1 "$param="'$(echo "$posargs" | cut -d: -f'"$it"');'
+            [[ -z "$mini" ]] || [[ -n "$verbose" ]] && decho 1 "echo POS.ARG: $param = "'$'"$param"';'
             it=$((it + 1))
         done
         decho 0 'fi'
     fi
 }
 
+wrap() {
+    width="$1"
+        # text="$@"
+    # result=""
+    # text=$(echo "$text" | tr '\n' ' ' | tr '\t' ' ')
+    # while [ "$text" ]; do
+    #     chunk="$(echo $text | head -c $width)"
+    #     text="$(echo $text | tail -c +$width)"
+    #     result="$result\n$chunk"
+    #     info $chunk
+    # done
+    cat <&0 | fold -w $width | sed -e 's/\( \?\)$/\1\\/g'
+}
+
 arg-make() {
-    parse "$@"
+
+    for i in $@; do
+        case "$i" in
+            +*)
+                name=$(echo $i | tr -d '+')
+                eval "$name=true"
+        esac
+    done
+
+    e=$(parse "$@")
+    if [[ -n "$mini" ]]; then
+        e=`echo $e | sed -e 's/ \?\([;|=]\) \?/\1/g'`
+        # e="`echo $e | sed -e 's/ \?\([\[\(]\)/\1/g'`"
+        e="`echo $e | sed -e 's/\([)]\) \?/\1/g'`"
+        e="`echo $e | sed -e 's/;;;/;;/g'`"
+    fi
+    e=`echo "$e" | wrap 25`
+    echo "$e"
+    echo
 }
 
 revargs() {
