@@ -8,7 +8,7 @@ Let's say I have a script that requires a file and a remote URL to upload it to.
 
 In bash, I could this simply enough:
 
-```sh
+```bash
 #!/bin/bash
 filepath="$1"
 url="$2"
@@ -32,7 +32,7 @@ Let's say we want to write a parser that allows the user to both pass `file` and
 
 This is how you would do it with this tool in its current version:
 
-```sh
+```bash
  ./parse_args.sh argmake \
     file \ # A positional argument
     url \ # A positional argument
@@ -89,7 +89,7 @@ posargs=:/my/file:example.com
 POS.ARG: file = /my/file
 POS.ARG: url = example.com
 
-$ # We can see that positional arguments take precedence over keywords args, since they are parsed afterwards
+# We can see that positional arguments take precedence over keywords args, since they are parsed afterwards
 
 $ ./parser.sh --file /my/file --url example.com -v
 KW.ARG: file = /my/file
@@ -108,7 +108,7 @@ A simple name such as `file` will be considered a positional argument.
 
 You can create a flag argument by prefixing it with a dash. You should always provide a 2-dash version and a shorthand version (one dash, one character) for good measure. You can add several aliases separated by commas:
 
-```
+```bash
 -v,--verbose,--VERBOSE
 ```
 
@@ -118,7 +118,7 @@ If the flag argument is provided, a variable of the same name (last alias from l
 
 Keyword arguments are described like boolean flags, plus you need to specify that the actual value is found in the next argument with `{}`:
 
-```
+```bah
 -u,--url {}
 ```
 
@@ -140,7 +140,7 @@ For keyword arguments, it is recommended that you give it at least a full name w
 
 You can directly insert the code in your script by first sourcing the `parse_args.sh` script in your own:
 
-```sh
+```bash
 source parse_args.sh # this is a relative path, so we assume it is found in the cwd from where your script is run.
 
 # To force the script to be sourced from the same location as your script, here's a way to do it:
@@ -168,7 +168,7 @@ echo url=$url
 echo verbose=$verbose
 ```
 It's especially useful when you have several subcommands:
-```sh
+```bash
 upload() {
     source <(
         argmake \
