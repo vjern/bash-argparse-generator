@@ -205,3 +205,25 @@ download() {
 * Warnings/Errors when a required argument isn't provided
 
 Suggestions are welcome!
+
+## arg make options
+
+There are currently two options available:
+* `+minify` creates a compact version of the script, if you're deranged enough (as I was to make this) to use this sort of code :wink::
+```bash
+posargs="";while [[ $# -g\
+t 0 ]];do case "$1" in -f\
+|--file)file="$2";shift;;\
+-v|--verbose)verbose=true\
+;;-u|--url)url="$2";shift\
+;;*)posargs="$posargs:$1"\
+;esac;shift;done;if [[ -n\
+ "$posargs" ]];then file=\
+$(echo "$posargs"|cut -d:\
+ -f2);url=$(echo "$posarg\
+s"|cut -d: -f3);fi\
+```
+* Here is an excerpt of the first professionnal critics:
+  > :cold_sweat::scream:
+* `+verbose` to enable debug echo statements when in `minify` mode.
+
