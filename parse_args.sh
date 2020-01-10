@@ -146,7 +146,7 @@ arg-make() {
         e="`echo $e | sed -e 's/\([)]\) \?/\1/g'`"
         e="`echo $e | sed -e 's/;;;/;;/g'`"
     fi
-    e=`echo "$e" | wrap 30`
+    e=`echo "$e" | wrap 25`
     echo "$e"
     echo
 }
