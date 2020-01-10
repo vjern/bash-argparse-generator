@@ -78,12 +78,12 @@ fi
 
 Let's say we place this code in a file called `parser.sh`, and we try running it with various arguments:
 ```bash
-$ ./parser.sh /my/file //example.com
+$ ./parser.sh /my/file example.com
 posargs=:/my/file:example.com
 POS.ARG: file = /my/file
 POS.ARG: url = example.com
 
-$ ./parser.sh /my/file //example.com -f aa
+$ ./parser.sh /my/file example.com -f aa
 KW.ARG: file = aa
 posargs=:/my/file:example.com
 POS.ARG: file = /my/file
