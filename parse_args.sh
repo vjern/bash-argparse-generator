@@ -6,7 +6,7 @@ cl() {
 }
 
 info() {
-    return
+    # return
     # Echo anything to stderr
     echo -e $(cl 95)info: $(cl 96)$@ 1>&2 $(cl 0)
 }
@@ -84,14 +84,14 @@ parse() {
     decho 0 'done'
     decho 0
     if [ -n "$posparams" ]; then
-        i=2
+        it=2
         decho 0 '# Parse positional arguments'
         decho 0 "echo posargs="'$posargs'
         decho 0 'if [[ -n "$posargs" ]]; then'
         for param in $(echo $posparams | tr ':' '\n'); do
-            decho 1 "$param="'$(echo "$posargs" | cut -d: -f'"$i"')'
+            decho 1 "$param="'$(echo "$posargs" | cut -d: -f'"$it"')'
             decho 1 "echo POS.ARG: $param = "'$'"$param"
-            i=$((i + 1))
+            it=$((it + 1))
         done
         decho 0 'fi'
     fi
