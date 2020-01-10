@@ -6,7 +6,7 @@ It allows one to generate bash code to parse arguments.
 
 Let's say I have a script that requires a file and a remote URL to upload it to. 
 
-In bash, I could this simply enough:
+In bash, I could do this simply enough:
 
 ```bash
 #!/bin/bash
@@ -128,7 +128,7 @@ When parsing, it will simply take the value of the next argument on its right, w
 
 For positional arguments, the name you give it will create a variable with the same name.
 
-For keyword arguments, it is recommended that you give it at least a full name with two dashes (--verbose). The word after the dashes of the last alias will be used as the name:
+For keyword arguments, it is recommended that you give it at least a full name with two dashes (`--verbose`). The word after the dashes of the last alias will be used as the name:
 
 ```js
 -v,--verbose => verbose
@@ -184,7 +184,7 @@ upload() {
 download() {
     source <(
         arg make \
-          url \
+          ip \
           file \
           -i,--ip {} \
           -f,--file {} \
@@ -193,3 +193,15 @@ download() {
     scp $(whoami)@$ip:$file $to
 }
 ```
+
+## And one day, maybe we'll have ...
+
+* Cardinal arguments:
+ * Positional: `arg make posarg files+`
+ * Keyword: `arg make -d 2 -d 3` (well, not really common)
+* Equal sign keyword arguments: `arg make -f,--file  {} => x.sh --file=/path/to/my/file <==> x.sh --file /path/to/my/file`
+* Default values
+* Required arguments
+* Warnings/Errors when a required argument isn't provided
+
+Suggestions are welcome!
